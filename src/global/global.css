@@ -1,0 +1,29 @@
+.test {
+  margin-left: 90px;
+  /* border: red solid 3px; */
+  width: 110px;
+}
+.custom-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  text-align: center;
+  z-index: 1000;
+  font-size: 16px;
+  transition: bottom 0.5s ease-in-out;
+}
+
+.success {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.error {
+  background-color: #d9534f;
+  color: white;
+}
+.toast-body-text {
+  color: aliceblue;
+}
