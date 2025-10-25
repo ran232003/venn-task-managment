@@ -25,6 +25,7 @@ const NavigationBar = () => {
   const user = useSelector((state) => {
     return state.user.user;
   });
+  console.log(user);
   const handleSignOut = async () => {
     handleApiCall(
       "GET",
@@ -46,7 +47,7 @@ const NavigationBar = () => {
       <Navbar expand="lg" className="bg-body-tertiary my-nav">
         <Container fluid>
           <Navbar.Brand as={Link} to={"/"}>
-            Task Master
+            TaskFlow
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">

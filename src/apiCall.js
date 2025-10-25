@@ -37,8 +37,19 @@ export const apiCall = async (method, url, payload) => {
         break;
       case "FORMDATA":
         const formData = new FormData();
+
         for (const key in payload) {
-          if (payload.hasOwnProperty(key)) {
+          if (!payload.hasOwnProperty(key)) continue;
+
+          if (key === "attachments" && payload[key]) {
+            // ✅ Handle multiple files properly
+            const files = payload[key];
+            if (files.length > 0) {
+              for (let i = 0; i < files.length; i++) {
+                formData.append("attachments", files[i]); // append each file separately
+              }
+            }
+          } else {
             formData.append(key, payload[key]);
           }
         }

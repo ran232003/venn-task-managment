@@ -10,6 +10,23 @@ const userSchema = new mongoose.Schema(
     userName: {
       type: String,
     },
+    jobTitle: {
+      type: String,
+    },
+    company: {
+      type: String,
+    },
+    profilePic: {
+      type: String,
+    },
+    timeZone: {
+      type: Map,
+      of: String,
+    },
+    emailNotification: {
+      type: Boolean,
+      default: true,
+    },
     password: {
       type: String,
       required: false, // Only required for "local"

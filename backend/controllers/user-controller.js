@@ -176,6 +176,48 @@ const verifyResetPassword = async (req, res) => {
     res.status(400).json({ message: "Invalid or expired token" });
   }
 };
+const updateProfile = async (req, res) => {
+  // console.log("updateProfile", req.body, req.file, req.user);
+  //let newImage = "http://localhost:5000/" + image.path.replace(/\\/g, "/");
+  try {
+    const fields = req.body;
+
+    const updateData = {};
+
+    // Safely update only fields that exist
+    if (fields.jobTitle) updateData.jobTitle = fields.jobTitle;
+    if (fields.company) updateData.company = fields.company;
+    if (fields.emailNotification !== undefined) {
+      updateData.emailNotification =
+        fields.emailNotification === "true" ||
+        fields.emailNotification === true;
+    }
+
+    if (fields.timeZone) {
+      updateData.timeZone = fields.timeZone;
+    }
+
+    // Handle image upload
+    if (req.file) {
+      let newImage =
+        "http://localhost:5000/" + req.file.path.replace(/\\/g, "/");
+      updateData.profilePic = newImage;
+    }
+    console.log(updateData);
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+      new: true,
+    }).select("-password");
+    console.log(updatedUser);
+    return res.status(200).json({
+      status: "ok",
+      user: updatedUser,
+    });
+  } catch (e) {
+    console.log(e);
+    let err = new MyError("Internal Error", 500);
+    return next(err);
+  }
+};
 module.exports = {
   signup,
   verifyReset,
@@ -185,4 +227,5 @@ module.exports = {
   signin,
   authProviderSign,
   forgotPassword,
+  updateProfile,
 };

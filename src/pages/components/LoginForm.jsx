@@ -75,7 +75,11 @@ function LoginForm({
             );
           })}
 
-          <Button variant="primary" type="submit" className="w-100">
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-100 center mt-3 justify-content-center align-items-center"
+          >
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
           <Button

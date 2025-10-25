@@ -1,32 +1,51 @@
-import React from "react";
-import { Formik, Form, Field } from "formik";
+import React, { useState } from "react";
+import { Formik, Form, Field, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Button, Form as BootstrapForm } from "react-bootstrap";
 import ProfileImageInput from "./ProfileImageInput";
-import { yupForProfile } from "../../../global/helperFunction";
-
-const timeZones = [
-  "UTC",
-  "Europe/London",
-  "Europe/Berlin",
-  "Asia/Jerusalem",
-  "America/New_York",
-  "Asia/Tokyo",
-];
-
+import {
+  getInitialValuesProfile,
+  yupForProfile,
+} from "../../../global/helperFunction";
+import TimezoneSelect from "react-timezone-select";
+import { useApiHelper } from "../../../global/apiHelper";
+import { useDispatch } from "react-redux";
+import { UPDATE_PROFILE_URL } from "../../../URLS";
+import { userAction } from "../../../store/userSlice";
+import { useNavigate } from "react-router-dom";
 const ProfileForm = ({ user }) => {
-  const initialValues = {
-    jobTitle: user?.jobTitle || "",
-    company: user?.company || "",
-    timeZone: user?.timeZone || "",
-    emailNotification: user?.emailNotification || false,
-    profilePic: null,
-  };
+  const { handleApiCall } = useApiHelper();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const [selectedTimezone, setSelectedTimezone] = useState(
+    user?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+  const initialValues = getInitialValuesProfile(user);
+  const FormikDebug = () => {
+    const { values, errors, touched } = useFormikContext();
+    return (
+      <pre style={{ fontSize: "12px" }}>
+        {JSON.stringify({ values, errors, touched }, null, 2)}
+      </pre>
+    );
+  };
   const ProfileSchema = yupForProfile;
 
   const handleSubmit = (values) => {
     console.log("Submitted values:", values);
+    handleApiCall(
+      "FORMDATA",
+      UPDATE_PROFILE_URL,
+      values,
+      (data) => {
+        dispatch(userAction.setUser(data.user));
+        navigate("/");
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   return (
@@ -41,6 +60,7 @@ const ProfileForm = ({ user }) => {
       >
         {({ errors, touched, setFieldValue, values }) => (
           <Form>
+            {/* <FormikDebug /> */}
             <ProfileImageInput
               onImageSelect={(file) => setFieldValue("profilePic", file)}
               initialImage={user?.profilePic}
@@ -74,22 +94,16 @@ const ProfileForm = ({ user }) => {
 
             <BootstrapForm.Group className="mb-3">
               <BootstrapForm.Label>Time Zone</BootstrapForm.Label>
-              <Field
-                as="select"
-                name="timeZone"
-                className={`form-select ${
-                  touched.timeZone && errors.timeZone ? "is-invalid" : ""
-                }`}
-              >
-                <option value="">Select time zone</option>
-                {timeZones.map((tz) => (
-                  <option key={tz} value={tz}>
-                    {tz}
-                  </option>
-                ))}
-              </Field>
+              <TimezoneSelect
+                value={selectedTimezone}
+                onChange={(tz) => {
+                  setSelectedTimezone(tz);
+                  console.log(tz.label);
+                  setFieldValue("timeZone", tz); // some versions return object, some string
+                }}
+              />
               {touched.timeZone && errors.timeZone && (
-                <div className="invalid-feedback">{errors.timeZone}</div>
+                <div className="text-danger mt-1">{errors.timeZone}</div>
               )}
             </BootstrapForm.Group>
 

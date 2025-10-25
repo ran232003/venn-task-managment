@@ -4,6 +4,7 @@ import { apiCall } from "../apiCall";
 import { useDispatch } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
+import { loadingAction } from "../store/loadingData";
 
 export const useApiHelper = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,14 @@ export const useApiHelper = () => {
     componentAction,
     dealy
   ) => {
+    dispatch(
+      loadingAction.toggleLoading({
+        isLoading: true,
+        message: "Loading...",
+        type: "spinner",
+        progress: 0,
+      })
+    );
     await new Promise((resolve) => setTimeout(resolve, (dealy = 1000)));
 
     try {
@@ -28,7 +37,7 @@ export const useApiHelper = () => {
           data?.message === "Token is invalid" ||
           data?.status === "Token is invalid"
         ) {
-          navigate("/auth/signin");
+          navigate("/auth/login");
         }
         if (data?.status === "error" || data?.status === "fail") {
           onFailure(data);
@@ -40,6 +49,14 @@ export const useApiHelper = () => {
         onFailure(error);
       }
     } finally {
+      dispatch(
+        loadingAction.toggleLoading({
+          isLoading: false,
+          message: "Loading...",
+          type: "spinner",
+          progress: 0,
+        })
+      );
     }
   };
 

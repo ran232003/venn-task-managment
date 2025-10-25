@@ -18,7 +18,7 @@ const NavDropComponent = ({ user, handleSignOut }) => {
           className="nav-profile d-flex"
           title={
             <img
-              src={profilePic}
+              src={user.profilePic || profilePic}
               alt="Profile"
               style={{ width: "40px", borderRadius: "50%" }}
             />

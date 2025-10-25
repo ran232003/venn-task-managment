@@ -1,10 +1,14 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 import UserSlice from "./userSlice";
+import LoadingSlice from "./loadingData";
+import TaskSlice from "./taskSlice";
 
 // Combine all your slices
 const appReducer = combineReducers({
   user: UserSlice.reducer,
+  loading: LoadingSlice.reducer,
+  task: TaskSlice.reducer,
 });
 
 // Root reducer to reset all state on logout

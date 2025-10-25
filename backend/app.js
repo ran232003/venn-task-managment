@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const MyError = require("./models/MyError");
 const userRouter = require("./routes/user-route");
+const taskRouter = require("./routes/task-route");
 
 const cookieParser = require("cookie-parser");
 const User = require("./models/user-schema");
@@ -28,8 +29,9 @@ mongoose.connect("mongodb://localhost:27017/task-ven-review", {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+app.use("/uploads/files", express.static(__dirname + "/uploads/files"));
 app.use("/api/task/user", userRouter);
-
+app.use("/api/task/tasks", taskRouter);
 // app.use("/api/movie/stokes", stockRouter);
 
 app.use((req, res, next) => {

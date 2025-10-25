@@ -27,3 +27,11 @@
 .toast-body-text {
   color: aliceblue;
 }
+.ps-menuitem.ps-active {
+  background-color: #6366f1 !important;
+  color: white !important;
+  border-radius: 5px;
+}
+.ps-menuitem.ps-active svg {
+  color: white !important;
+}
